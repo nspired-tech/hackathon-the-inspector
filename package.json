@@ -1,0 +1,23 @@
+{
+  "name": "hackathon-tunnel-vision",
+  "version": "1.0.0",
+  "description": "Project intended to improve the deployment process for open source projects.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nspired-tech/hackathon-tunnel-vision.git"
+  },
+  "keywords": [],
+  "author": "Byte-Sized by Nspired tech",
+  "license": "BSD-3",
+  "bugs": {
+    "url": "https://github.com/nspired-tech/hackathon-tunnel-vision/issues"
+  },
+  "homepage": "https://github.com/nspired-tech/hackathon-tunnel-vision#readme",
+  "devDependencies": {
+    "jest": "^27.3.1"
+  }
+}
