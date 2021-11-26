@@ -10,7 +10,7 @@ jobs:
     - name: Run tests
       id: test
       run: |
-        OUTPUT=$(yarn test --json)
+        OUTPUT=$(./node_modules/.bin/jest --json --testLocationInResults | jq -r '.testResults[] | {results: .assertionResults[], name: .name} | ["\(.name)#L\(.results.location.line)", .results.fullName, .results.status] | @tsv')
         echo "::set-output name=result::$OUTPUT"
     - uses: marocchino/sticky-pull-request-comment@v2
       with:
