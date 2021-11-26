@@ -10,9 +10,16 @@ jobs:
     - name: Run tests
       id: test
       run: |
-        OUTPUT=$(./node_modules/.bin/jest --json --testLocationInResults | jq -r ".testResults[] | {results: .assertionResults[], name: (.name | sub(\"$PWD\"; \"\"))} | select(.results.status == \"failed\") | [\"[\(.results.fullName)]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/blob/$GITHUB_SHA\(.name)#L\(.results.location.line))\", .results.failureMessages[]] | @tsv" | awk -F '\t' '{print $1"<details><summary>🔎 Failure details</summary><p>\r\n\r\n```javascript\r\n"$2"\r\n```\r\n\r\n</p></details>\r\n\r\n"}')
+        ./node_modules/.bin/jest --json --testLocationInResults > test-results.json || :
+        #### Extract test messages
+        jq -r '.testResults[] | .message' test-results.json > test-messages
+        csplit -b '%d' test-messages '/●/' '{*}'
+        cat xx0
+        echo "--------"
+        cat xx1
+        #### Prepare comment file
         echo "# 🚨 Test results" > test-results.md
-        echo -e $OUTPUT >> test-results.md
+        jq -r ".testResults[] | {results: .assertionResults[], name: (.name | sub(\"$PWD\"; \"\"))} | select(.results.status == \"failed\") | [\"[\(.results.fullName)]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/blob/$GITHUB_SHA\(.name)#L\(.results.location.line))\", .results.failureMessages[]] | @tsv" test-results.json | awk -F '\t' '{c="tail -n+3 xx"NR;failure=""; while((c | getline line) > 0) {failure=failure"\r\n"line};close(c);print $1"<details><summary>Failure details</summary><p>\r\n\r\n```javascript\r\n"failure"\r\n```\r\n\r\n### Stacktrace\r\n\r\n```javascript\r\n"$2"\r\n```\r\n\r\n</p></details>\r\n\r\n"}' >> test-results.md
     - uses: marocchino/sticky-pull-request-comment@v2
       with:
         header: test
