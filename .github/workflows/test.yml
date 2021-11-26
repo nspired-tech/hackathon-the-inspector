@@ -10,6 +10,11 @@ jobs:
     - name: Run tests
       id: test
       run: |
+        echo $GITHUB_REPOSITORY
+        echo $GITHUB_SHA
+        echo $GITHUB_SERVER_URL
+        PR_NUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
+        echo $PR_NUMBER
         OUTPUT=$(./node_modules/.bin/jest --json --testLocationInResults | jq -r ".testResults[] | {results: .assertionResults[], name: (.name | sub(\"$PWD\"; \"\"))} | [\"\(.name)#L\(.results.location.line)\", .results.fullName, .results.status] | @tsv")
         echo "::set-output name=result::$OUTPUT"
     - uses: marocchino/sticky-pull-request-comment@v2
