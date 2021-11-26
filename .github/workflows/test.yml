@@ -10,12 +10,10 @@ jobs:
     - name: Run tests
       id: test
       run: |
-        OUTPUT=$(./node_modules/.bin/jest --json --testLocationInResults | jq -r ".testResults[] | {results: .assertionResults[], name: (.name | sub(\"$PWD\"; \"\"))} | [\"$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/blob/$GITHUB_SHA\(.name)#L\(.results.location.line)\", .results.fullName, .results.status] | @tsv")
+        OUTPUT=$(./node_modules/.bin/jest --json --testLocationInResults | jq -r ".testResults[] | {results: .assertionResults[], name: (.name | sub(\"$PWD\"; \"\"))} | [\"[\(.results.fullName)]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/blob/$GITHUB_SHA\(.name)#L\(.results.location.line))\", .results.status] | @tsv")
         echo "::set-output name=result::$OUTPUT"
     - uses: marocchino/sticky-pull-request-comment@v2
       with:
         header: test
         message: |
-          ```
           ${{ steps.test.outputs.result }}
-          ```
