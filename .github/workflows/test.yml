@@ -10,7 +10,7 @@ jobs:
     - name: Run tests
       id: test
       run: |
-        OUTPUT=$(./node_modules/.bin/jest --json --testLocationInResults | jq -r ".testResults[] | {results: .assertionResults[], name: (.name | sub(\"$PWD\"; \"\"))} | [\"[\(.results.fullName)]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/blob/$GITHUB_SHA\(.name)#L\(.results.location.line))\", .results.status] | @tsv")
+        OUTPUT=$(./node_modules/.bin/jest --json --testLocationInResults | jq -r ".testResults[] | {results: .assertionResults[], name: (.name | sub(\"$PWD\"; \"\"))} | select(.results.status == \"failed\") | [\"[\(.results.fullName)]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/blob/$GITHUB_SHA\(.name)#L\(.results.location.line))\", .results.failureMessages[]] | @tsv" | awk -F '\t' '{print  $1 "\n\n ```" $2 "\n```\n\n"}')
         OUTPUT="${OUTPUT//'%'/'%25'}"
         OUTPUT="${OUTPUT//$'\n'/'%0A'}"
         OUTPUT="${OUTPUT//$'\r'/'%0D'}"
