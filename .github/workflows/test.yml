@@ -10,7 +10,7 @@ jobs:
     - name: Run tests
       id: test
       run: |
-        OUTPUT=$(./node_modules/.bin/jest --json --testLocationInResults | jq -r ".testResults[] | {results: .assertionResults[], name: (.name | sub(\"$PWD\"; \"\"))} | select(.results.status == \"failed\") | [\"[\(.results.fullName)]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/blob/$GITHUB_SHA\(.name)#L\(.results.location.line))\", .results.failureMessages[]] | @tsv" | awk -F '\t' '{print  $1"\r\n\r\n```\r\n"$2"\r\n```\r\n\r\n"}')
+        OUTPUT=$(./node_modules/.bin/jest --json --testLocationInResults | jq -r ".testResults[] | {results: .assertionResults[], name: (.name | sub(\"$PWD\"; \"\"))} | select(.results.status == \"failed\") | [\"[\(.results.fullName)]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/blob/$GITHUB_SHA\(.name)#L\(.results.location.line))\", .results.failureMessages[]] | @tsv" | awk -F '\t' '{print  "<details><summary>"$1"</summary><p>\r\n```javascript\r\n"$2"\r\n```\r\n</p></details>"}')
         echo -e $OUTPUT > test-results.md
     - uses: marocchino/sticky-pull-request-comment@v2
       with:
