@@ -11,6 +11,9 @@ jobs:
       id: test
       run: |
         OUTPUT=$(./node_modules/.bin/jest --json --testLocationInResults | jq -r ".testResults[] | {results: .assertionResults[], name: (.name | sub(\"$PWD\"; \"\"))} | [\"[\(.results.fullName)]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/blob/$GITHUB_SHA\(.name)#L\(.results.location.line))\", .results.status] | @tsv")
+        OUTPUT="${OUTPUT//'%'/'%25'}"
+        OUTPUT="${OUTPUT//$'\n'/'%0A'}"
+        OUTPUT="${OUTPUT//$'\r'/'%0D'}"
         echo "::set-output name=result::$OUTPUT"
     - uses: marocchino/sticky-pull-request-comment@v2
       with:
