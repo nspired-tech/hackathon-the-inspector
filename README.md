@@ -1,6 +1,6 @@
-# hackathon-tunnel-vision
+# The Inspector
 
-Hackathon project intended to improve the deployment process for open source projects. Tunnel vision creates an easier way to surface errors within your unit tests.
+Hackathon project intended to improve the deployment process for open source projects. The Inspector creates an easier way to surface errors within your unit tests.
 
 ## Running the tests
 
@@ -11,7 +11,7 @@ yarn run test
 
 ## Built With
 
-  - Jest Js: Testing Framework 
+  - Jest Js: Testing Framework
 
 
 ## Authors
