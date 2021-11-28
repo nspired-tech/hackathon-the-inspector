@@ -12,7 +12,7 @@ jobs:
     - name: Run Inspector
       if: ${{ failure() }}
       run: |
-        [ -f test-results.json ] || (echo "# All tests passed 🎉" > test-results.md && exit 0)
+        [ -f test-results.json ] || exit 0
         #### Extract test messages
         jq -r '.testResults[] | .message' test-results.json > test-messages
         csplit -b '%d' test-messages '/●/' '{*}'
@@ -39,3 +39,8 @@ jobs:
       with:
         header: test
         path: test-results.md
+    - uses: marocchino/sticky-pull-request-comment@v2
+      if: ${{ success() }}
+      with:
+        header: test
+        message: "# All tests passed 🎉"
